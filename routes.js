@@ -22,8 +22,11 @@ module.exports = function (app, myDataBase) {
 
     app.get('/api/shorturl/:id', (req,res) => {
         // findone in db by index (1,2,3...)
-        const result = myDataBase.findOne({"short_url": req.params.id})
-        res.redirect(result.original_url);
+        
+        myDataBase.find({short_url: parseInt(req.params.id)}).toArray().then(result => {
+            res.redirect(`${result[0].original_url}`);
+        });
+        //res.redirect(result.original_url);
         // Example of output: { "short_url": 2, "original_url": "url"}
         //res.json({'short_url':result.short_url,"original_url":result.original_url});
     })
