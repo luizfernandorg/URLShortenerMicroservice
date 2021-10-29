@@ -1,0 +1,33 @@
+{
+  "name": "urlshortenermicroservice",
+  "version": "1.0.0",
+  "description": "URL Shortener Microservice",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luizfernandorg/URLShortenerMicroservice.git"
+  },
+  "keywords": [
+    "freecodecamp",
+    "nodejs",
+    "expressjs",
+    "mongodb",
+    "url",
+    "shortener",
+    "microservice"
+  ],
+  "author": "Luiz Fernando",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/luizfernandorg/URLShortenerMicroservice/issues"
+  },
+  "homepage": "https://github.com/luizfernandorg/URLShortenerMicroservice#readme",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "mongodb": "^4.1.3"
+  }
+}
