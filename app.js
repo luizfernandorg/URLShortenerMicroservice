@@ -1,15 +1,23 @@
-const express = require("express");
 require("dotenv").config();
-const app = express();
+const express = require("express");
+const myDB = require('./connection');
 const path = require('path')
+
+const app = express();
 
 app.use('/static', express.static(path.join(__dirname, 'public')))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req,res) => {
-    res.sendFile(path.join(__dirname, 'views/index.html'));
-})
+myDB(async (client) => {
+    const myDataBase = await client.db('freecodecamp').collection('urlshortener');
+   
+    const routes = require('./routes.js');
+    routes(app, myDataBase);
+    
+}).catch(e => {
+   console.error(e);
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
