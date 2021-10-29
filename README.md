@@ -2,5 +2,5 @@
 
 ## start the service
 ```
-$ npm start
+$ nodemon app
 ```
