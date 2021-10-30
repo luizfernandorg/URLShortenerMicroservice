@@ -9,11 +9,10 @@ app.use('/static', express.static(path.join(__dirname, 'public')))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-myDB(async (client) => {
-    const myDataBase = await client.db('freecodecamp').collection('urlshortener');
+myDB(async (UrlModel) => {
    
     const routes = require('./routes.js');
-    routes(app, myDataBase);
+    routes(app, UrlModel);
     
 }).catch(e => {
    console.error(e);

@@ -1,34 +1,45 @@
 const path = require('path');
 
-module.exports = function (app, myDataBase) {
+module.exports = function (app, UrlModel) {
 
     app.get("/", (req,res) => {
         res.sendFile(path.join(__dirname, 'views/index.html'));
     })
     
     app.post("/api/shorturl", (req,res) => {
-
-        const cursor = myDataBase.find({});
-        cursor.toArray().then(elements => {
-            if(elements.length) {
-                const result = myDataBase.insertOne({'short_url':elements.length+1,"original_url":req.body.url});
-                res.json({'original_url':req.body.url,'short_url':elements.length+1});      
-            } else {
-                const result = myDataBase.insertOne({'short_url':1,"original_url":req.body.url});
-                res.json({'original_url':req.body.url,'short_url':1});           
-            }
+      var url = /^((http|ftp|https):\/\/|((www|WWW)\.)){1}?([a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+(\.[a-zA-Z0-9]+)*)$/;
+      var regex = new RegExp(url);
+      if(!req.body.url.match(regex)){
+        res.json({ error: 'invalid url' })
+        return;
+      }else{
+        
+        UrlModel.findOne({}).sort({short_url: -1}).then( data => {
+            if(data == undefined){
+              const newUrl = new UrlModel({
+                original_url:req.body.url,
+                short_url:1
+              });
+              newUrl.save().then((err,doc)=>{
+                if(err) console.log(err);
+                res.json({'original_url': doc.original_url,'short_url':doc.short_url});
+              });
+            }else{
+              UrlModel.findOneAndUpdate({original_url:req.body.url},{original_url:req.body.url,short_url:data.short_url+1},{
+                new: true,
+                upsert: true // Make this update into an upsert
+              },(err,doc) => {
+                res.json({'original_url':doc.original_url,'short_url':doc.short_url})
+              });
+            }            
         });
+      }
     });
 
     app.get('/api/shorturl/:id', (req,res) => {
-        // findone in db by index (1,2,3...)
-        
-        myDataBase.find({short_url: parseInt(req.params.id)}).toArray().then((err,result) => {
-            if(err) res.json({ error: 'invalid url' });
-            res.redirect(`${result[0].original_url}`);
+        UrlModel.findOne({short_url: parseInt(req.params.id)},(err,result) => {
+          if(err) res.json({ error: 'invalid url' })
+          res.redirect(`${result.original_url}`);
         });
-        //res.redirect(result.original_url);
-        // Example of output: { "short_url": 2, "original_url": "url"}
-        //res.json({'short_url':result.short_url,"original_url":result.original_url});
     })
   }
