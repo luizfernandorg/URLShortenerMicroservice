@@ -1,7 +1,6 @@
 // Do not change this file
 require('dotenv').config();
 
-// TODO change to mongoose
 const mongoose = require("mongoose");
 
 async function main(callback) {
