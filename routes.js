@@ -7,12 +7,13 @@ module.exports = function (app, myDataBase) {
     })
     
     app.post("/api/shorturl", (req,res) => {
-
-        const cursor = myDataBase.find({});
-        cursor.toArray().then(elements => {
+        //TODO get the highest shorturl to increment by 1 but also certify if that already exist an equal url
+        const cursor = myDataBase.find({}).sort({short_url:-1}).toArray((err, elements) => {
+            console.log(elements[0].short_url)
+            res.send("Testing input");
             if(elements.length) {
-                const result = myDataBase.insertOne({'short_url':elements.length+1,"original_url":req.body.url});
-                res.json({'original_url':req.body.url,'short_url':elements.length+1});      
+                const result = myDataBase.insertOne({'short_url':elements[0].short_url+1,"original_url":req.body.url});
+                res.json({'original_url':req.body.url,'short_url':elements[0].short_url+1});      
             } else {
                 const result = myDataBase.insertOne({'short_url':1,"original_url":req.body.url});
                 res.json({'original_url':req.body.url,'short_url':1});           

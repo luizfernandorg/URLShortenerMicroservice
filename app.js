@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 myDB(async (client) => {
-    const myDataBase = await client.db('freecodecamp').collection('urlshortener');
+    const myDataBase = await client.db('freecodecamp').collection('urlshorteners');
    
     const routes = require('./routes.js');
     routes(app, myDataBase);
