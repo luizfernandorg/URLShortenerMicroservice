@@ -1,5 +1,6 @@
 const path = require('path');
-
+const dns = require('dns');
+let urls = [];
 module.exports = function (app, UrlModel) {
 
     app.get("/", (req,res) => {
