@@ -8,6 +8,7 @@ module.exports = function (app, UrlModel) {
     })
     
     app.post("/api/shorturl", (req,res) => {
+      console.log("Ip log: " + req.ip)
       var url = /^(http|https|ftp):\/\/([a-zA-Z0-9\-]*\.)*([a-zA-Z0-9]*\.){1,3}[a-zA-Z0-9]{2,5}\/*(\?*[a-zA-Z0-9]*=[a-zA-Z0-9]*)*$/;
       var regex = new RegExp(url);
       if(!req.body.url.match(regex)){
