@@ -1,6 +1,7 @@
 const path = require('path');
 const dns = require('dns');
-let urls = [];
+const { url } = require('url');
+
 module.exports = function (app, UrlModel) {
 
     app.get("/", (req,res) => {
@@ -8,17 +9,18 @@ module.exports = function (app, UrlModel) {
     })
     
     app.post("/api/shorturl", (req,res) => {
-      const url = /^(http|https|ftp):\/\/([a-zA-Z0-9\-]*\.)*([a-zA-Z0-9]*\.){1,3}[a-zA-Z0-9]{2,5}\/*(\?*[a-zA-Z0-9]*=[a-zA-Z0-9]*)*$/;
-      var regex = new RegExp(url);
+      var urlRegex = /^(http|https|ftp):\/\/([a-zA-Z0-9\-]*\.)*([a-zA-Z0-9]*\.){1,3}[a-zA-Z0-9]{2,5}\/*(\?*[a-zA-Z0-9]*=[a-zA-Z0-9]*)*$/;
+      var regex = new RegExp(urlRegex);
       if(!req.body.url.match(regex)){
         res.json({ error: 'invalid url' })
         return;
       }else{
-       /* dns.lookup(req.body.url.split("://")[1],(err,address,family) => {
+       const hostname = new URL(req.body.url).hostname
+       dns.lookup(hostname,(err,address,family) => {
           if(err){
             res.json({ error: 'invalid url' })
-            return
-          }else{*/
+            return console.log(address)
+          }else{
             UrlModel.findOne({}).sort({short_url: -1}).then( data => {
               if(data == undefined){
                 const newUrl = new UrlModel({
@@ -30,7 +32,7 @@ module.exports = function (app, UrlModel) {
                   res.json({'original_url': doc.original_url,'short_url':doc.short_url});
                 });
               }else{
-                UrlModel.findOneAndUpdate({original_url:req.body.url},{original_url:req.body.url,short_url:data.short_url+1},{
+                UrlModel.findOneAndUpdate({original_url:req.body.url},{short_url:data.short_url+1},{
                   new: true,
                   upsert: true // Make this update into an upsert
                 },(err,doc) => {
@@ -38,8 +40,8 @@ module.exports = function (app, UrlModel) {
                 });
               }            
             });
-          /*}
-       // });*/
+          }
+        });
       }
     });
 
