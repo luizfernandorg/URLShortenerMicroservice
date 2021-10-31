@@ -8,6 +8,14 @@ module.exports = function (app, UrlModel) {
     })
     
     app.post("/api/shorturl", (req,res) => {
+      var ipAddr = req.headers["x-forwarded-for"];
+      if (ipAddr){
+        var list = ipAddr.split(",");
+        ipAddr = list[list.length-1];
+      } else {
+        ipAddr = req.connection.remoteAddress;
+      }
+      console.log(ipAddr);
       const url = /^(http|https|ftp):\/\/([a-zA-Z0-9\-]*\.)*([a-zA-Z0-9]*\.){1,3}[a-zA-Z0-9]{2,5}\/*(\?*[a-zA-Z0-9]*=[a-zA-Z0-9]*)*$/;
       var regex = new RegExp(url);
       if(!req.body.url.match(regex)){
