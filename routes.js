@@ -15,7 +15,7 @@ module.exports = function (app, UrlModel) {
       } else {
         ipAddr = req.connection.remoteAddress;
       }
-      console.log(ipAddr);
+      console.log(ipAddr, req.ip);
       const url = /^(http|https|ftp):\/\/([a-zA-Z0-9\-]*\.)*([a-zA-Z0-9]*\.){1,3}[a-zA-Z0-9]{2,5}\/*(\?*[a-zA-Z0-9]*=[a-zA-Z0-9]*)*$/;
       var regex = new RegExp(url);
       if(!req.body.url.match(regex)){
