@@ -8,8 +8,7 @@ module.exports = function (app, UrlModel) {
     })
     
     app.post("/api/shorturl", (req,res) => {
-      console.log(req.body.url);
-      var url = /^(http|https|ftp):\/\/[a-zA-Z0-9]*\.([a-zA-Z0-9]*\.){1,3}[a-zA-Z0-9]{2,3}\/*\?*[a-zA-Z0-9]*=[a-zA-Z0-9]*$/;
+      var url = /^(http|https|ftp):\/\/([a-zA-Z0-9]\.)*([a-zA-Z0-9]*\.){1,3}[a-zA-Z0-9]{2,3}\/*\?*[a-zA-Z0-9]*=[a-zA-Z0-9]*$/;
       var regex = new RegExp(url);
       if(!req.body.url.match(regex)){
         res.json({ error: 'invalid url' })
@@ -18,7 +17,7 @@ module.exports = function (app, UrlModel) {
        /* dns.lookup(req.body.url.split("://")[1],(err,address,family) => {
           if(err){
             res.json({ error: 'invalid url' })
-            return console.log(address)
+            return
           }else{*/
             UrlModel.findOne({}).sort({short_url: -1}).then( data => {
               if(data == undefined){
