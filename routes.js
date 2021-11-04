@@ -54,7 +54,7 @@ module.exports = function (app, myDataBase) {
     app.get('/api/shorturl/:id', (req,res) => {
         // findone in db by index (1,2,3...)
         
-        myDataBase.find({short_url: parseInt(req.params.id)}).toArray().then((err,result) => {
+        myDataBase.find({short_url: parseInt(req.params.id)}).toArray((err,result) => {
             if(err) res.json({ error: 'invalid url' });
             res.redirect(`${result[0].original_url}`);
         });
